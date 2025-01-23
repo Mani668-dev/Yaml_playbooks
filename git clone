@@ -1,0 +1,20 @@
+########################
+###clone git repo######
+---
+- name: Clone GitHub Repository
+  hosts: appgroup
+  become: true
+  become_user: root
+  gather_facts: false
+  tasks:
+    - name: Install Git
+      yum:
+        name: git
+        state: present
+
+    - name: Clone GitHub Repository
+      git:
+        repo: 'https://github.com/Mani668-dev/Yaml_playbooks.git'
+        dest: /home/repo
+        version: main
+        force: yes
