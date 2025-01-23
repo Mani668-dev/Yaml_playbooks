@@ -1,0 +1,29 @@
+# install git & maven  project to node mechines
+---
+- name: Installation of git & maven
+
+  hosts: appgroup
+
+  become: true
+
+  become_user: root
+
+  gather_facts: false
+
+  tasks:
+
+    - name: Install git
+
+      yum:
+
+        name: git
+
+        state: present
+
+    - name: Install maven
+
+      yum:
+
+        name: maven
+
+        state: present
