@@ -1,0 +1,36 @@
+---
+- name: Install Apache Server
+  hosts: ngnix  # use group name or other ip info 
+  become: yes    # Use sudo to run commands as root
+  become_user: root
+  gather_facts: true  
+  tasks:
+    - name: Install Apache on Red Hat
+      yum:
+        name: httpd
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: Install Apache on Ubuntu
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian" and ansible_distribution == "Ubuntu"
+
+    - name: Install Apache on Debian
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian" and ansible_distribution == "Debian"
+
+    - name: Start and enable Apache service
+      service:
+        name: "{{ 'httpd' if ansible_os_family == 'RedHat' else 'apache2' }}"
+        state: started
+        enabled: yes
+
+    - name: Print success message
+      debug:
+        msg: "Apache has been installed and started successfully on {{ ansible_hostname }}."
