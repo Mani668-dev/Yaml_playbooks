@@ -1,0 +1,43 @@
+---
+- name: Start and enable Apache service
+      systemd:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Create a directory for the static website
+      file:
+        path: /var/www/html/my_static_website
+        state: directory
+        owner: apache
+        group: apache
+        mode: '0755'
+
+    - name: Copy index.html to the static website directory
+      copy:
+        content: |
+          <html>
+            <head>
+              <title>Welcome to My Static Website</title>
+            </head>
+            <body>
+              <h1>Hello, World!</h1>
+              <p>This is a simple static website served by Apache.</p>
+            </body>
+          </html>
+        dest: /var/www/html/my_static_website/index.html
+        owner: apache
+        group: apache
+        mode: '0644'
+
+    - name: Configure Apache to serve the static website
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^DocumentRoot'
+        line: 'DocumentRoot "/var/www/html/my_static_website"'
+        state: present
+
+    - name: Restart Apache service to apply changes
+      systemd:
+        name: httpd
+        state: restarted
